@@ -91,8 +91,7 @@ section { padding: 90px 0; }
 .menu__list a {
   display: block; padding: 8px 18px; font-size: .95rem; transition: color .2s, padding .2s;
 }
-.menu__list a:hover { color: 
-#f2a65a; padding-left: 22px; }
+.menu__list a:hover { color: var(--sky); padding-left: 22px; }
 .menu__list a[aria-current="page"] { color: 
 #f2a65a; }
 

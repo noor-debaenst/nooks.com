@@ -58,3 +58,7 @@ faqItems.forEach(item => {
     }
   });
 });
+
+document.addEventListener('click', e => {
+  if (!menu.contains(e.target)) setMenu(false);
+});
