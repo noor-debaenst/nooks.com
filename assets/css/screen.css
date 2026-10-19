@@ -47,12 +47,10 @@ section { padding: 90px 0; }
   display: flex; justify-content: center; padding: 0 12px;
 }
 .menu {
-  width: fit-content;          /* was: min(300px, 100%) */
+  width: fit-content;  /* was: min(300px, 100%) */
   max-width: 100%;
-  background: 
-#3a0823; color: #fff;
+  background: var(--pink); color: var(--burgundy);
   border-radius: 16px; overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
 }
 .menu__bar {
   display: flex;
@@ -66,13 +64,11 @@ section { padding: 90px 0; }
 
 .menu__toggle {
   display: grid; place-items: center; width: 34px; height: 34px;
-  background: transparent; color: #fff; border: 0; border-radius: 10px; cursor: pointer;
+  background: transparent; color: var(--burgundy); border: 0; border-radius: 10px; cursor: pointer;
   transition: background .2s;
 }
 .menu__toggle svg { width: 18px; height: 18px; }
-.menu__toggle:hover { background: rgba(255, 255, 255, .12); }
-.menu__toggle:focus-visible { outline: 2px solid #fff; box-shadow: 0 0 0 3px 
-#2f5bd8; }
+.menu__toggle:hover { background: var(--cream); }
 
 .icon-close { display: none; }
 .menu.open .icon-dots { display: none; }
@@ -85,12 +81,42 @@ section { padding: 90px 0; }
 
 .menu__list li:first-child { margin-top: 2px; }
 .menu__list li:last-child { margin-bottom: 8px; }
-.menu__list a {
-  display: block; padding: 8px 18px; font-size: .95rem; transition: color .2s, padding .2s;
+.menu__list a {display: block; padding: 8px 18px; font-size: .95rem; transition: color .2s, padding .2s;
 }
-.menu__list a:hover { color: var(--sky); padding-left: 22px; }
-.menu__list a[aria-current="page"] { color: 
-#f2a65a; }
+
+.menu__list a {
+  display: block;
+  margin: 0 8px;              /* ruimte rond het crème vlak */
+  padding: 8px 12px;
+  border-radius: 10px;        /* zelfde afronding als de menu-knop */
+  font-size: .95rem;
+  transition: background .2s, color .2s;
+}
+
+.menu__list a:hover,
+.menu__list a:focus-visible {
+  background: var(--cream);   /* de crème hoverstatus */
+  color: var(--burgundy);     /* donkere tekst, goed leesbaar op crème */
+}
+.menu__list a:hover { background: var(--cream); } 
+.menu__list ul { padding: 0 6px; }   /* ruimte zodat de highlight niet tegen de rand plakt */
+
+.menu__list a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 10px;               /* zelfde als .menu__toggle */
+  font-size: .95rem;
+  transition: background .2s, color .2s, padding .2s;
+}
+
+.menu__list a:hover,
+.menu__list a:focus-visible {
+  background: var(--cream);          /* of een andere kleur uit je pakket */
+  color: var(--burgundy);
+  padding-left: 16px;                /* behoud het kleine schuifeffect */
+}
+
+.menu__list a[aria-current="page"] { color: #f2a65a; }
 
 .hero {
   min-height: 100vh;
@@ -104,7 +130,7 @@ section { padding: 90px 0; }
 /* ============ KNOPPEN ============ */
 .btn {
   display: inline-block; padding: 14px 32px; border-radius: 999px;
-  background: var(--ink); color: var(--bg); font-size: .95rem;
+  background: var(--sky); color: var(--burgandy); font-size: .95rem;
   transition: .25s; border: 0; cursor: pointer;
 }
 .btn:hover { background: var(--lavender); transform: translateY(-2px); }
@@ -113,21 +139,19 @@ section { padding: 90px 0; }
 .hero {
   min-height: 100vh; display: grid; place-items: center; text-align: center;
   padding-top: 120px; position: relative; overflow: hidden;
+  background: var(--burgundy);
 }
-.hero h1 { font-size: clamp(2.8rem, 10vw, 8rem); max-width: 12ch; margin: 0 auto 20px; }
-.hero p { color: var(--muted); font-size: 1.2rem; margin-bottom: 32px; }
+.hero h1 { font-size: clamp(2.2rem, 10vw, 8rem); max-width: 12ch; margin: 0 auto 20px; color: var(--cream); }
+.hero p { color: var(--cream); font-size: 1.3rem; margin-bottom: 32px; }
 
 .float {
   position: absolute; width: clamp(90px, 14vw, 190px); aspect-ratio: 3/4;
   border-radius: 14px; background: var(--card); animation: bob 6s ease-in-out infinite;
 }
 .float:nth-child(1) { left: 5%;  top: 22%;    rotate: -6deg; }
-.float:nth-child(2) { right: 6%; top: 18%;    rotate: 5deg;  animation-delay: -2s; background: 
-#d9b8a6; }
-.float:nth-child(3) { left: 12%; bottom: 10%; rotate: 4deg;  animation-delay: -4s; background: 
-#b9c4b0; }
-.float:nth-child(4) { right: 12%; bottom: 8%; rotate: -5deg; animation-delay: -1s; background: 
-#cfc3d6; }
+.float:nth-child(2) { right: 6%; top: 18%;    rotate: 5deg;  animation-delay: -2s; background: #d9b8a6; }
+.float:nth-child(3) { left: 12%; bottom: 10%; rotate: 4deg;  animation-delay: -4s; background: #b9c4b0; }
+.float:nth-child(4) { right: 12%; bottom: 8%; rotate: -5deg; animation-delay: -1s; background: #cfc3d6; }
 @keyframes bob { 50% { transform: translateY(-16px); } }
 
 /* ============ INTRO ============ */
@@ -162,21 +186,33 @@ background: var(--pink);
 
 /* ============ MARQUEE ============ */
 
+/* ============ MARQUEE ============ */
 .marquee {
   overflow: hidden;
-  padding: 18px 0;
-  background: var(--burgundy);
+  padding: clamp(28px, 5vw, 56px) 0;      /* blijft hetzelfde: de balk verandert niet */
   color: var(--cream);
+
+  background-color: var(--burgundy);
+  background-image:
+    linear-gradient(rgba(246, 239, 221, .1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(246, 239, 221, .1) 1px, transparent 1px);
+  background-size: clamp(20px, 2.5vw, 28px) clamp(20px, 2.5vw, 28px);
 }
 
 .track {
   display: flex;
-  gap: 48px;
+  gap: clamp(28px, 4vw, 56px);
   width: max-content;
   animation: scroll 28s linear infinite;
   font-family: Georgia, serif;
-  font-size: 1.8rem;
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);   /* was clamp(2.8rem, 7vw, 5rem) */
+  line-height: .7;
   white-space: nowrap;
+}
+
+@keyframes scroll {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
 }
 
 @keyframes scroll {
@@ -202,17 +238,29 @@ background: var(--pink);
 .bring__cloud li {
   position: absolute;
   padding: 14px 28px; border-radius: 999px;
-  background: var(--pink); color: var(--burgundy);
+  background: var(--bg, var(--pink));
+  color: var(--fg, var(--burgundy));
   font-size: 1rem; font-weight: 500; white-space: nowrap; cursor: default;
   rotate: var(--r, 0deg);
   animation: drift 6s ease-in-out infinite;
-  transition: background .25s, scale .25s;
+  transition: background .25s, color .25s, scale .25s;
 }
+
 .bring__cloud li:hover {
-  background: var(--olive);
+  background: var(--bg-hover, var(--burgundy));
+  color: var(--fg-hover, var(--cream));
   scale: 1.08;
   animation-play-state: paused;
 }
+
+/* Afwisselende kleuren (patroon van 5, herhaalt zichzelf) */
+/* Afwisselende kleuren (patroon van 4, herhaalt zichzelf) */
+.bring__cloud li:nth-child(4n + 1) { --bg: var(--pink);     --fg: var(--burgundy); }
+.bring__cloud li:nth-child(4n + 2) { --bg: var(--lavender); --fg: var(--burgundy); }
+.bring__cloud li:nth-child(4n + 3) { --bg: var(--olive);    --fg: var(--burgundy); }
+.bring__cloud li:nth-child(4n + 4) { --bg: var(--sky);      --fg: var(--burgundy); }
+
+
 @keyframes drift { 50% { translate: 0 -10px; } }
 
 /* Positie, hoek en tempo van elk pilletje */
@@ -243,10 +291,8 @@ background: var(--pink);
   flex: 1; aspect-ratio: 3/4; border-radius: 14px; background: var(--card);
   display: flex; align-items: flex-end; padding: 14px; font-size: .85rem;
 }
-.essentials div:nth-child(2) { background: 
-#112103; }
-.essentials div:nth-child(3) { background: 
-#cfc3d6; }
+.essentials div:nth-child(2) { background: #112103; }
+.essentials div:nth-child(3) { background: #cfc3d6; }
 
 .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 .skills li { padding: 6px 16px; border: 1px solid #0003; border-radius: 999px; font-size: .9rem; }
