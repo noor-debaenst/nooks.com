@@ -10,8 +10,7 @@
   --pink:     #d8a4af;
 
   
-  --bg: 
-#f6efdd;
+
   --ink: 
 #1d1b19;
   --muted: 
@@ -56,15 +55,13 @@ section { padding: 90px 0; }
   box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
 }
 .menu__bar {
-  display: flex; align-items: center;
-  justify-content: flex-start;  /* was: space-between */
-  gap: 14px;                    /* afstand tussen naam en knop */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
   padding: 6px 6px 6px 18px;
 }
-.menu__bar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 6px 6px 6px 18px;
-}
+
 .menu__logo { font-family: Georgia, serif; font-size: 1.1rem; }
 
 .menu__toggle {
@@ -95,16 +92,22 @@ section { padding: 90px 0; }
 .menu__list a[aria-current="page"] { color: 
 #f2a65a; }
 
-.hero { ... padding-top: 80px; ... }   /* was 120px, mag 80px worden */
-.page-head { padding: 110px 0 40px; }   /* was 160px, mag 110px worden */
-
+.hero {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding-top: 80px;
+  position: relative;
+  overflow: hidden;
+}
 /* ============ KNOPPEN ============ */
 .btn {
   display: inline-block; padding: 14px 32px; border-radius: 999px;
   background: var(--ink); color: var(--bg); font-size: .95rem;
   transition: .25s; border: 0; cursor: pointer;
 }
-.btn:hover { background: var(--accent); transform: translateY(-2px); }
+.btn:hover { background: var(--lavender); transform: translateY(-2px); }
 
 /* ============ HERO ============ */
 .hero {
