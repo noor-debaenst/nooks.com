@@ -207,5 +207,80 @@ if (box) {
   });
 }
 
+// ============ EIGEN CURSOR ============
+(() => {
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!fine || reduce) return;
 
+  const cursor = document.createElement("div");
+  cursor.className = "cursor";
+  cursor.setAttribute("aria-hidden", "true");
+  cursor.innerHTML = '<span class="cursor__ring"></span><span class="cursor__dot"></span>';
 
+  for (let i = 0; i < 8; i++) {
+    const tick = document.createElement("span");
+    tick.className = "cursor__tick";
+    tick.style.setProperty("--a", `${i * 45}deg`);
+    cursor.append(tick);
+  }
+
+  document.body.append(cursor);
+  document.documentElement.classList.add("has-custom-cursor");
+
+  const linkSelector = "a, button, summary, .photo, [role='button']";
+  let x = 0, y = 0, queued = false, clickTimer;
+
+  // Eerste achtergrondkleur die niet doorzichtig is, van het element naar boven
+  function backgroundBehind(el) {
+    while (el && el !== document.documentElement) {
+      const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+      if (m && (m.length < 4 || parseFloat(m[3]) > 0.5)) {
+        return [Number(m[0]), Number(m[1]), Number(m[2])];
+      }
+      el = el.parentElement;
+    }
+    return [246, 239, 221]; // crème als niets gevonden wordt
+  }
+
+  function luminance([r, g, b]) {
+    return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  }
+
+  function update() {
+    queued = false;
+    const el = document.elementFromPoint(x, y);
+    if (!el) return;
+    cursor.classList.toggle("on-dark", luminance(backgroundBehind(el)) < 0.4);
+    cursor.classList.toggle("is-link", !!el.closest(linkSelector));
+  }
+
+  // Alleen bijwerken wanneer de browser klaar is om te tekenen
+  function queueUpdate() {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  document.addEventListener("mousemove", (e) => {
+    x = e.clientX;
+    y = e.clientY;
+    cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    cursor.classList.add("is-visible");
+    queueUpdate();
+  });
+
+  // Ook bijwerken bij scrollen: de muis staat dan stil maar de ondergrond verandert
+  window.addEventListener("scroll", queueUpdate, { passive: true });
+
+  document.addEventListener("mousedown", () => {
+    clearTimeout(clickTimer);
+    cursor.classList.remove("is-click");
+    void cursor.offsetWidth;
+    cursor.classList.add("is-click");
+    clickTimer = setTimeout(() => cursor.classList.remove("is-click"), 450);
+  });
+
+  document.addEventListener("mouseleave", () => cursor.classList.remove("is-visible"));
+})();

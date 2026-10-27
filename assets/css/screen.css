@@ -53,7 +53,7 @@ h2 {
 
 h2 {
   font-size: clamp(2rem, 5vw, 3.5rem);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 section {
@@ -71,6 +71,7 @@ section {
 p {
   text-wrap: pretty;
   /* vermijdt dat er één woord alleen op de laatste regel staat */
+  font-size: 1.4rem;
 }
 
 .behind__text,
@@ -276,9 +277,10 @@ p {
 
 .hero h1 {
   font-size: clamp(2.2rem, 10vw, 8rem);
-  max-width: 12ch;
+  max-width: 14ch;        /* was 12ch: breder, dus minder afbrekingen */
   margin: 0 auto 20px;
   color: var(--cream);
+  text-wrap: balance;     /* verdeelt de woorden gelijk over de regels */
 }
 
 .hero p {
@@ -513,7 +515,6 @@ p {
 
 .bring__text h2 {
   margin-bottom: 16px;
-  font-style: italic;
 }
 
 .bring__text img {
@@ -2475,4 +2476,84 @@ p {
   }
 }
 
+/* ============ EIGEN CURSOR ============ */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none !important;
+}
 
+.cursor {
+  /* Op lichte vlakken: bordeaux */
+  --c: var(--burgundy);
+  --c-soft: rgba(58, 8, 35, .14);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+/* Op donkere vlakken: crème */
+.cursor.on-dark {
+  --c: var(--cream);
+  --c-soft: rgba(246, 239, 221, .18);
+}
+
+.cursor.is-visible { opacity: 1; }
+
+/* Bolletje: iets doorzichtig */
+.cursor__dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: .85;
+  transition: transform .25s ease, opacity .15s, background .25s;
+}
+
+/* Ring: alleen zichtbaar op links, met doorzichtige vulling */
+.cursor__ring {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  box-sizing: border-box;
+  border: 2px solid var(--c);
+  border-radius: 50%;
+  background: var(--c-soft);
+  opacity: 0;
+  transform: scale(.4);
+  transition: transform .25s ease, opacity .2s, border-color .25s, background .25s;
+}
+
+/* Streepjes: afgerond, alleen bij klikken */
+.cursor__tick {
+  position: absolute;
+  width: 4px;
+  height: 12px;
+  margin: -6px 0 0 -2px;
+  border-radius: 999px;
+  background: var(--c);
+  opacity: 0;
+  transform: rotate(var(--a)) translateY(-26px);
+}
+
+/* Link-stand: ring met kleiner bolletje */
+.cursor.is-link .cursor__ring { opacity: 1; transform: scale(1); }
+.cursor.is-link .cursor__dot { transform: scale(.7); opacity: 1; }
+
+/* Klik-stand: ring en bolletje weg, streepjes schuiven naar binnen */
+.cursor.is-click .cursor__ring,
+.cursor.is-click .cursor__dot { opacity: 0; transform: scale(.4); }
+.cursor.is-click .cursor__tick { animation: cursorTick .45s ease-out; }
+
+@keyframes cursorTick {
+  0%   { opacity: 1; transform: rotate(var(--a)) translateY(-32px); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(-18px); }
+}
