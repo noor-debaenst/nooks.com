@@ -36,6 +36,7 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  font-weight: 1000;
 }
 
 .wrap {
@@ -61,7 +62,9 @@ section {
 }
 
 .sub {
+  /* body font */
   color: var(--muted);
+  font-size: 1.2rem;
 }
 
 .center {
@@ -113,7 +116,7 @@ p {
 }
 
 .menu__logo {
-  font-family: Georgia, serif;
+  font-family: Georgia;
   font-size: 1.1rem;
 }
 
@@ -233,16 +236,6 @@ p {
   color: #f2a65a;
 }
 
-.hero {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding-top: 80px;
-  position: relative;
-  overflow: hidden;
-}
-
 
 
 /* ============ KNOPPEN ============ */
@@ -264,53 +257,121 @@ p {
 }
 
 /* ============ HERO ============ */
-.hero {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
+
+/* De hero-inhoud mag zo breed zijn als het scherm */
+.hero .wrap {
+  max-width: none;
   text-align: center;
-  padding-top: 120px;
-  position: relative;
-  overflow: hidden;
-  background: var(--burgundy);
 }
 
-.hero h1 {
-  font-size: clamp(2.2rem, 10vw, 8rem);
-  max-width: 14ch;        /* was 12ch: breder, dus minder afbrekingen */
-  margin: 0 auto 20px;
-  color: var(--cream);
-  text-wrap: balance;     /* verdeelt de woorden gelijk over de regels */
-}
-
-.hero p {
-  color: var(--cream);
-  margin-bottom: 32px;
+/* Extra zekerheid: een te brede regel groeit vanuit het midden, nooit alleen naar rechts */
+.hero__line {
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  min-height: 1.15em;
 }
 
 .hero {
-  min-height: 100vh;
+  /* hoogte schaalt mee met de breedte, maar blijft binnen het scherm */
+  min-height: clamp(480px, 62vw, 100svh);
   display: grid;
-  place-items: center;
-  text-align: center;
-  padding-top: 120px;
-  position: relative;
-  overflow: hidden;
-
+  align-items: center;
+  padding: clamp(80px, 13vw, 150px) 0 clamp(40px, 8vw, 100px);
+  /* ...de rest (color, background) blijft hetzelfde */
+  color: var(--cream);
   background-color: var(--burgundy);
   background-image:
     linear-gradient(rgba(246, 239, 221, .1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(246, 239, 221, .1) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-size: clamp(20px, 2.5vw, 28px) clamp(20px, 2.5vw, 28px);
 }
 
-.float {
-  position: absolute;
-  width: clamp(90px, 14vw, 190px);
-  aspect-ratio: 3/4;
-  border-radius: 14px;
-  background: var(--card);
-  animation: bob 6s ease-in-out infinite;
+.hero .wrap {
+  text-align: center;
+}
+
+.hero__title {
+  /* schaalt mee met de schermbreedte, zodat elke regel op één lijn past */
+   font-size: var(--hero-fs, min(7rem, calc((100vw - 48px) / 12.5)));
+  line-height: 1.15;
+  max-width: none;
+  margin: 0 0 clamp(16px, 3vw, 28px);
+  text-align: center;
+  color: var(--cream);
+}
+
+.hero__title em {
+  font-style: italic;
+}
+
+.hero__line {
+  display: block;
+  white-space: nowrap;
+  min-height: 1.15em;
+  text-align: center;
+}
+
+/* De breedte wordt door JavaScript vastgezet (in em), zodat de tekst
+   van links naar rechts typt en de zin niet heen en weer springt */
+.hero__inner {
+  display: inline-block;
+  text-align: center;   /* geen vaste breedte meer: de zin blijft gecentreerd */
+}
+
+
+#typeWord {
+  display: inline;
+  text-align: left;
+}
+
+.hero__pic {
+  display: inline-block;
+  width: 1.1em;
+  height: .95em;
+  object-fit: cover;
+  border-radius: .2em;
+  vertical-align: -.08em;
+  margin: 0 .08em;
+  transition: transform .4s cubic-bezier(.3, 1.6, .5, 1), opacity .3s;
+}
+
+.hero__sub {
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  color: var(--cream);
+  opacity: .8;
+  margin: 0 auto clamp(18px, 3vw, 28px);
+  text-align: center;
+}
+
+.hero .btn {
+  color: var(--burgundy);
+  padding: clamp(11px, 1.6vw, 14px) clamp(22px, 3.5vw, 32px);
+}
+
+/* Cursortje: neemt netto geen breedte in */
+.caret {
+  display: inline-block;
+  width: .05em;
+  height: .85em;
+  margin: 0 -.05em 0 0;
+  vertical-align: -.05em;
+  background: currentColor;
+  animation: blink 1s steps(1) infinite;
+}
+
+.hero { overflow: hidden; }
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Foto's poppen pas op als ze aan de beurt zijn */
+.hero.is-typing .hero__pic:not(.is-in) {
+  transform: scale(0);
+  opacity: 0;
 }
 
 .float:nth-child(1) {
@@ -348,6 +409,37 @@ p {
     transform: translateY(-16px);
   }
 }
+
+/* Alles in de hero in het midden */
+.hero .wrap {
+  text-align: center;
+}
+
+.hero__title {
+  text-align: center;
+  /* was left */
+}
+
+.hero__line {
+  display: block;
+  text-align: center;
+  /* beide regels gecentreerd, ook regel 2 */
+  white-space: nowrap;
+  min-height: 1.15em;
+}
+
+.hero__sub {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Knop: de kleur had een typfout (--burgandy), nu correct */
+.hero .btn {
+  color: var(--burgundy);
+}
+
+
 
 /* ============ INTRO ============ */
 .intro {
@@ -2502,7 +2594,9 @@ p {
   --c-soft: rgba(246, 239, 221, .18);
 }
 
-.cursor.is-visible { opacity: 1; }
+.cursor.is-visible {
+  opacity: 1;
+}
 
 /* Bolletje: iets doorzichtig */
 .cursor__dot {
@@ -2544,16 +2638,39 @@ p {
 }
 
 /* Link-stand: ring met kleiner bolletje */
-.cursor.is-link .cursor__ring { opacity: 1; transform: scale(1); }
-.cursor.is-link .cursor__dot { transform: scale(.7); opacity: 1; }
+.cursor.is-link .cursor__ring {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cursor.is-link .cursor__dot {
+  transform: scale(.7);
+  opacity: 1;
+}
 
 /* Klik-stand: ring en bolletje weg, streepjes schuiven naar binnen */
 .cursor.is-click .cursor__ring,
-.cursor.is-click .cursor__dot { opacity: 0; transform: scale(.4); }
-.cursor.is-click .cursor__tick { animation: cursorTick .45s ease-out; }
+.cursor.is-click .cursor__dot {
+  opacity: 0;
+  transform: scale(.4);
+}
+
+.cursor.is-click .cursor__tick {
+  animation: cursorTick .45s ease-out;
+}
 
 @keyframes cursorTick {
-  0%   { opacity: 1; transform: rotate(var(--a)) translateY(-32px); }
-  70%  { opacity: 1; }
-  100% { opacity: 0; transform: rotate(var(--a)) translateY(-18px); }
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateY(-32px);
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateY(-18px);
+  }
 }

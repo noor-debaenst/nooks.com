@@ -66,7 +66,7 @@ document.addEventListener('click', e => {
 
 
 /* Titels vullen regel voor regel tijdens het scrollen */
-const fillTitles = Array.from(document.querySelectorAll('h1, h2'));
+const fillTitles = Array.from(document.querySelectorAll('h1:not(.hero__title), h2'));
 const originals = new Map(fillTitles.map(t => [t, t.innerHTML]));
 let titleLines = new Map();   // titel -> lijst met regel-elementen
 
@@ -283,4 +283,142 @@ if (box) {
   });
 
   document.addEventListener("mouseleave", () => cursor.classList.remove("is-visible"));
+})();
+
+
+// ============ HERO: TYPMACHINE ============
+(() => {
+  const hero = document.querySelector('.hero');
+  const title = document.querySelector('.hero__title');
+  const el = (id) => document.getElementById(id);
+  const A = el('typeA'), B = el('typeB'), C = el('typeC'), D = el('typeD');
+  const word = el('typeWord'), pic1 = el('heroPic1'), pic2 = el('heroPic2');
+  const inners = Array.from(document.querySelectorAll('.hero__inner'));
+  if (!hero || !title || !A || !B || !C || !D || !word) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Pas hier de woorden aan: de lettergrootte past zich vanzelf aan het langste woord aan
+  const words = ['creatieve', 'kleurrijke', 'nieuwsgierige', 'digitale', 'visuele'];
+
+  const MAX_FS = 112;   // maximale lettergrootte in px (7rem)
+  const SIDE = 24;      // ruimte links en rechts in px
+
+  const full = { A: A.textContent, B: B.textContent, C: C.textContent, D: D.textContent };
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // ---- Meten in een onzichtbare kopie, los van wat er al getypt is ----
+   function fit() {
+    const ghost = title.cloneNode(true);
+    ghost.removeAttribute('aria-label');
+    ghost.style.cssText =
+      'position:absolute;left:0;top:0;visibility:hidden;pointer-events:none;' +
+      'width:max-content;max-width:none;margin:0;font-size:100px;';
+    ghost.querySelectorAll('.caret').forEach((c) => c.remove());
+
+    const g = (id) => ghost.querySelector('#' + id);
+    g('typeA').textContent = full.A;
+    g('typeB').textContent = full.B;
+    g('typeC').textContent = full.C;
+    g('typeD').textContent = full.D;
+    const ghostWord = g('typeWord');
+    ghost.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
+    ghost.querySelectorAll('.hero__inner').forEach((n) => (n.style.width = ''));
+
+    hero.appendChild(ghost);
+    const ghostInners = Array.from(ghost.querySelectorAll('.hero__inner'));
+
+    // Breedte van de breedste regel, met het breedste woord uit de lijst
+    function widest() {
+      let best = 0;
+      words.forEach((w) => {
+        ghostWord.textContent = w;
+        ghostInners.forEach((i) => {
+          best = Math.max(best, i.getBoundingClientRect().width);
+        });
+      });
+      return best;
+    }
+
+    const available = (document.documentElement.clientWidth - SIDE * 2) * 0.98;
+
+    // Eerste schatting, daarna controleren op de echte grootte
+    let fs = Math.min(MAX_FS, (available / widest()) * 100);
+    for (let k = 0; k < 3; k++) {
+      ghost.style.fontSize = fs + 'px';
+      const w = widest();
+      if (w <= available) break;
+      fs *= (available / w) * 0.99;
+    }
+
+    ghost.remove();
+    title.style.setProperty('--hero-fs', fs + 'px');
+    inners.forEach((inner) => (inner.style.width = ''));
+  }
+
+  fit();
+  let fitTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(fitTimer);
+    fitTimer = setTimeout(fit, 120);
+  });
+
+  if (document.fonts) document.fonts.ready.then(fit);
+
+  // ---- Typen ----
+  hero.classList.add('is-typing');
+  [A, B, C, D, word].forEach((n) => (n.textContent = ''));
+
+  const caret = document.createElement('span');
+  caret.className = 'caret';
+  caret.setAttribute('aria-hidden', 'true');
+
+  async function typeInto(node, text, speed = 75) {
+    caret.remove();
+    node.after(caret);
+    for (let i = 1; i <= text.length; i++) {
+      node.textContent = text.slice(0, i);
+      await sleep(speed);
+    }
+  }
+
+  async function eraseFrom(node, speed = 40) {
+    let t = node.textContent;
+    while (t.length) {
+      t = t.slice(0, -1);
+      node.textContent = t;
+      await sleep(speed);
+    }
+  }
+
+  async function run() {
+    await sleep(400);
+
+    // Regel 1
+    await typeInto(A, full.A);
+    pic1.classList.add('is-in');
+    await sleep(300);
+    await typeInto(B, full.B);
+    await sleep(450);
+
+    // Regel 2: één doorlopende zin
+    await typeInto(C, full.C);
+    await sleep(120);
+    await typeInto(word, words[0]);
+    pic2.classList.add('is-in');
+    await sleep(300);
+    await typeInto(D, full.D);
+
+    // Eindeloos het woord wisselen
+    let i = 0;
+    while (true) {
+      await sleep(1800);
+      await typeInto(word, word.textContent, 0);
+      await eraseFrom(word);
+      await sleep(300);
+      i = (i + 1) % words.length;
+      await typeInto(word, words[i]);
+    }
+  }
+
+  run();
 })();
