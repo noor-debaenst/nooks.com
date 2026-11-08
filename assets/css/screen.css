@@ -2674,3 +2674,26 @@ p {
     transform: rotate(var(--a)) translateY(-18px);
   }
 }
+
+/* Kleiner scherm: de titel mag over meer regels verdeeld worden */
+@media (max-width: 800px) {
+  .hero .wrap {
+    padding: 0 20px;
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 9.5vw, 3.6rem);  /* vaste, vloeiende grootte */
+    line-height: 1.2;
+  }
+
+  .hero__line {
+    display: block;
+    white-space: normal;   /* afbreken mag weer */
+    min-height: 0;
+  }
+
+  .hero__inner {
+    display: inline;       /* geen blok meer, de tekst loopt gewoon door */
+  }
+}
+
